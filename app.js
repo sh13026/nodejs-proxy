@@ -1,10 +1,12 @@
 const net=require('net');
 const {WebSocket,createWebSocketStream}=require('ws');
+const axios = require('axios');
+const projectPageURL = `https://tangy-innovative-spot.glitch.me`;// 替换为你的项目域名
 const { TextDecoder } = require('util');
 const logcb= (...args)=>console.log.bind(this,...args);
 const errcb= (...args)=>console.error.bind(this,...args);
 
-const uuid= (process.env.UUID||'d342d11e-d424-4583-b36e-524ab1f0afa4').replace(/-/g, "");
+const uuid= (process.env.UUID||'abb31f09-0000-49f5-a513-6a89bc097634').replace(/-/g, "");
 const port= process.env.PORT||3000;
 
 const wss=new WebSocket.Server({port},logcb('listen:', port));
@@ -30,3 +32,19 @@ wss.on('connection', ws=>{
         }).on('error',errcb('Conn-Err:',{host,port}));
     }).on('error',errcb('EE:'));
 });
+
+// 定义访问间隔时间（2分钟）
+const intervalInMilliseconds = 2 * 60 * 1000;
+
+async function visitProjectPage() {
+  try {
+    // console.log(`Visiting project page: ${projectPageURL}`);
+    await axios.get(projectPageURL);
+    console.log('Page visited successfully.');
+  } catch (error) {
+    console.error('Error visiting project page:', error.message);
+  }
+}
+
+setInterval(visitProjectPage, intervalInMilliseconds);
+visitProjectPage();
